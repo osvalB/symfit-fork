@@ -51,7 +51,7 @@ class TakesData(object):
         :param named_data: assign dependent, independent and sigma variables data by name.
 
         Standard deviation can be provided to any variable. They have to be prefixed
-        with sigma\_. For example, let x be a Variable. Then sigma_x will give the
+        with sigma_. For example, let x be a Variable. Then sigma_x will give the
         stdev in x.
         """
         if isinstance(model, BaseModel):
