@@ -22,6 +22,14 @@ from .models import BaseModel, Model, BaseNumericalModel, CallableModel
 
 import inspect
 
+numpy_version = np.__version__
+from distutils.version import LooseVersion
+
+if LooseVersion(numpy_version) >= LooseVersion("1.15.0"):
+    numpy_product_function = np.prod
+else:
+    numpy_product_function = np.product
+
 class TakesData(object):
     """
     An base class for everything that takes data. Most importantly, it takes care
@@ -253,7 +261,7 @@ class HasCovarianceMatrix(TakesData):
             # Residual sum of squares
             rss = 2 * objective(**key2str(best_fit_params))
             # Degrees of freedom
-            raw_dof = np.sum([np.product(shape) for shape in self.data_shapes[1]])
+            raw_dof = np.sum([numpy_product_function(shape) for shape in self.data_shapes[1]])
             dof = raw_dof - len(self.model.params)
             if self.absolute_sigma:
                 # When interpreting as measurement error, we do not rescale.
