@@ -7,7 +7,19 @@ import pytest
 
 import numpy as np
 import sympy
-from scipy.integrate import simps
+
+from packaging.version import Version
+import pkg_resources
+
+scipy_version = pkg_resources.get_distribution("scipy").version
+
+if Version(scipy_version) >= Version("1.14.0"):
+    from scipy.integrate import simpson
+    scipy_simpson_function = simpson
+else:
+    from scipy.integrate import simps
+    scipy_simpson_function = simps
+
 from scipy.optimize import NonlinearConstraint, minimize
 
 from symfit import (
@@ -763,7 +775,7 @@ def test_constrained_dependent_on_model():
     constraint_model = Model.as_constraint(A - 1, model, constraint_type=Eq)
     constraint_exact = Eq(A, 1)
     constraint_num = CallableNumericalModel.as_constraint(
-        {Y: lambda x, y: simps(y, x) - 1},  # Integrate using simps
+        {Y: lambda x, y: scipy_simpson_function(y, x=x) - 1},  # Integrate using simps
         model=model,
         connectivity_mapping={Y: {x, y}},
         constraint_type=Eq
