@@ -22,10 +22,11 @@ from .models import BaseModel, Model, BaseNumericalModel, CallableModel
 
 import inspect
 
-numpy_version = np.__version__
-from distutils.version import LooseVersion
+from packaging.version import Version
 
-if LooseVersion(numpy_version) >= LooseVersion("1.15.0"):
+numpy_version = Version(np.__version__)
+
+if numpy_version >= Version("1.15.0"):
     numpy_product_function = np.prod
 else:
     numpy_product_function = np.product
