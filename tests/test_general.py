@@ -23,6 +23,14 @@ from tests.test_minimizers import subclasses
 
 import inspect
 
+from packaging.version import Version
+
+numpy_version = Version(np.__version__)
+
+if numpy_version >= Version("1.15.0"):
+    numpy_product_function = np.prod
+else:
+    numpy_product_function = np.product
 
 def setup_module():
     np.random.seed(0)
@@ -529,7 +537,7 @@ def test_likelihood_fitting_exponential():
     fit = Fit(pdf, xdata, objective=LogLikelihood)
     fit_result = fit.execute()
     pdf_i = fit.model(x=xdata, **fit_result.params).y  # probabilities
-    likelihood = np.product(pdf_i)
+    likelihood = numpy_product_function(pdf_i)
     loglikelihood = np.sum(np.log(pdf_i))
 
     assert fit_result.value(b) == pytest.approx(mean, 1e-3)
